@@ -83,5 +83,13 @@ datos con Pydantic y maneja errores sin caerse.
   versiones bloqueantes (que congelarían el event loop).
 - **Streaming:** implementado con un generador asíncrono (`async for` + `yield`).
 - **Validación:** Pydantic valida entradas y unifica la salida en `ModelResponse`.
+  El `role` es un `Literal`, así que un typo como `"usr"` falla al construir el
+  mensaje y no en medio de la llamada a la API.
 - **Resiliencia:** el manager captura excepciones y devuelve un error controlado
-  en lugar de romper el programa.
+  en lugar de romper el programa. Además distingue los casos: límite de tasa
+  (`RateLimitError` / HTTP 429), falla de red (`APIConnectionError`), error del
+  proveedor y error inesperado, cada uno con su mensaje.
+- **Mensajes `system` portables:** OpenAI los acepta dentro de `messages`, pero
+  Anthropic y Gemini los exigen aparte (`system` / `system_instruction`). Los
+  clientes lo traducen internamente, así que la misma lista de `ChatMessage`
+  funciona igual en los tres proveedores.

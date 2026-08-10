@@ -6,12 +6,16 @@ Pydantic valida los datos automáticamente: si algo viene mal
 error claro en vez de dejar pasar el dato malo.
 """
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
 class ChatMessage(BaseModel):
     """Un mensaje del chat: quién habla y qué dice."""
-    role: str        # "user", "assistant" o "system"
+    # Literal = Pydantic sólo acepta estos tres valores; cualquier otro rol
+    # (un typo como "usr") explota acá y no en medio de la llamada a la API.
+    role: Literal["user", "assistant", "system"]
     content: str     # el texto del mensaje
 
 
