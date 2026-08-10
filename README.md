@@ -4,6 +4,22 @@ Cliente asíncrono y unificado para consultar modelos de IA (OpenAI, Anthropic y
 Gemini) bajo una interfaz común. Soporta respuesta normal y streaming, valida
 datos con Pydantic y maneja errores sin caerse.
 
+## Sobre el desarrollo
+
+Este proyecto lo desarrollé apoyándome en herramientas de IA, sobre todo para
+pulir la estructura y la documentación y llegar a un resultado prolijo.
+
+Dicho eso, entiendo cada decisión que hay detrás del código y puedo explicarla:
+por qué la clase abstracta obliga a que todos los proveedores expongan la misma
+interfaz, por qué el streaming se resuelve con un generador asíncrono (`async
+for` + `yield`) en lugar de acumular la respuesta entera, por qué se usan los
+clientes async (`AsyncOpenAI`, `AsyncAnthropic`) y no las versiones bloqueantes
+que congelarían el event loop, qué valida Pydantic en cada schema y por qué el
+manager atrapa las excepciones en vez de dejar que revienten.
+
+La IA fue una herramienta de trabajo, no un reemplazo del criterio: el diseño,
+las decisiones y la comprensión del funcionamiento son míos.
+
 > 💡 **Gemini tiene capa gratuita** (https://aistudio.google.com/apikey), así que
 > es el proveedor más cómodo para probar el proyecto sin gastar.
 
@@ -67,19 +83,3 @@ datos con Pydantic y maneja errores sin caerse.
 - **Validación:** Pydantic valida entradas y unifica la salida en `ModelResponse`.
 - **Resiliencia:** el manager captura excepciones y devuelve un error controlado
   en lugar de romper el programa.
-
-## Sobre el desarrollo
-
-Este proyecto lo desarrollé apoyándome en herramientas de IA, sobre todo para
-pulir la estructura y la documentación y llegar a un resultado prolijo.
-
-Dicho eso, entiendo cada decisión que hay detrás del código y puedo explicarla:
-por qué la clase abstracta obliga a que todos los proveedores expongan la misma
-interfaz, por qué el streaming se resuelve con un generador asíncrono (`async
-for` + `yield`) en lugar de acumular la respuesta entera, por qué se usan los
-clientes async (`AsyncOpenAI`, `AsyncAnthropic`) y no las versiones bloqueantes
-que congelarían el event loop, qué valida Pydantic en cada schema y por qué el
-manager atrapa las excepciones en vez de dejar que revienten.
-
-La IA fue una herramienta de trabajo, no un reemplazo del criterio: el diseño,
-las decisiones y la comprensión del funcionamiento son míos.
