@@ -1,9 +1,5 @@
 # Unified Async LLM Client
 
-Cliente asíncrono y unificado para consultar modelos de IA (OpenAI, Anthropic y
-Gemini) bajo una interfaz común. Soporta respuesta normal y streaming, valida
-datos con Pydantic y maneja errores sin caerse.
-
 ## Sobre el desarrollo
 
 Este proyecto lo desarrollé apoyándome en herramientas de IA, sobre todo para
@@ -19,6 +15,12 @@ manager atrapa las excepciones en vez de dejar que revienten.
 
 La IA fue una herramienta de trabajo, no un reemplazo del criterio: el diseño,
 las decisiones y la comprensión del funcionamiento son míos.
+
+## Qué es
+
+Cliente asíncrono y unificado para consultar modelos de IA (OpenAI, Anthropic y
+Gemini) bajo una interfaz común. Soporta respuesta normal y streaming, valida
+datos con Pydantic y maneja errores sin caerse.
 
 > 💡 **Gemini tiene capa gratuita** (https://aistudio.google.com/apikey), así que
 > es el proveedor más cómodo para probar el proyecto sin gastar.
