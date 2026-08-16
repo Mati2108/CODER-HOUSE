@@ -3,3 +3,9 @@ anthropic
 google-genai
 pydantic
 python-dotenv
+
+# Módulo 2 — LCEL
+langchain
+langchain-openai
+langchain-anthropic
+langchain-google-genai
