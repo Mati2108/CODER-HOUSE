@@ -33,6 +33,7 @@ datos con Pydantic y maneja errores sin caerse.
 | `clients.py`   | Clase base abstracta `BaseLLMClient` + hijas `OpenAIClient`, `AnthropicClient` y `GeminiClient` (métodos `generate` y `stream`, versiones async). |
 | `manager.py`   | `AsyncLLMManager`: elige el proveedor según config y captura errores (error controlado). |
 | `main.py`      | Script de prueba: una pregunta en modo normal y en streaming.   |
+| `main_lcel.py` | **Módulo 2** — el mismo flujo reescrito en LCEL: `prompt \| modelo \| StrOutputParser()`. |
 
 ## Cómo correrlo
 
@@ -74,6 +75,40 @@ datos con Pydantic y maneja errores sin caerse.
 
 > La API key **nunca** va hardcodeada en el código: siempre en `.env`
 > (que está ignorado por git en `.gitignore`).
+
+## Módulo 2 — Refactorización a LCEL asíncrono
+
+`main_lcel.py` hace lo mismo que `main.py`, pero declarativo en vez de imperativo:
+
+```python
+chain = prompt | construir_modelo() | StrOutputParser()
+respuesta = await chain.ainvoke({"pregunta": "¿Qué es la entropía?"})
+```
+
+Lo que en el Módulo 1 eran una clase abstracta, tres hijas y un manager, acá son
+tres eslabones conectados con `|`. El `StrOutputParser` es el que reemplaza a los
+tres accesos distintos que había que escribir a mano para sacar el texto
+(`choices[0].message.content`, `content[0].text`, `.text`).
+
+```bash
+python main_lcel.py
+```
+
+**Sobre el proveedor:** la consigna pide `ChatOpenAI` o `ChatAnthropic`. Los dos
+están implementados en `construir_modelo()` y se eligen con `PROVIDER` en el
+`.env`, sin tocar la cadena. La demo incluida corre con `ChatGoogleGenerativeAI`
+simplemente porque es la key que tengo con saldo; los tres son intercambiables
+porque todos los `ChatXxx` de LangChain exponen la misma interfaz
+(`.ainvoke` / `.astream`). Si `PROVIDER` no está definido, el default es `openai`.
+
+**Dos cosas que aprendí peleándome con esto:**
+
+- `gemini-2.0-flash` (el que usa el Módulo 1) fue retirado por Google y devuelve
+  404. Los nombres de modelo caducan y conviene chequearlos con `models.list()`.
+- Con los modelos *pensantes* (Gemini 3.x, o1, Claude con thinking) los tokens de
+  razonamiento interno salen del mismo `max_tokens` que la respuesta visible.
+  Con 300 el modelo se quedaba sin cupo pensando y cortaba la frase por la mitad;
+  parece un bug del código y es presupuesto agotado.
 
 ## Decisiones de diseño
 
